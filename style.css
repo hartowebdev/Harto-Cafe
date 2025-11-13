@@ -68,6 +68,88 @@ main {
     gap: 40px;
 }
 
+/* modul dark mode */
+.dark-mode {
+  background: #1a1a1a !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .menu-item {
+  background: #2d2d2d !important;
+  border: 1px solid #444 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .menu-item h3,
+.dark-mode .menu-item p {
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .menu-item .price {
+  color: #ff6b6b !important; /* Merah terang */
+}
+
+.dark-mode .menu-category h2 {
+  color: #f0f0f0 !important; /* FIX HEADER SUB MENU */
+  background: #2d2d2d !important; /* Background hitam */
+  padding: 1rem !important;
+  border-radius: 8px !important;
+  margin-bottom: 1rem !important;
+}
+
+.dark-mode .btn-order {
+  background: #e74c3c !important;
+  color: white !important;
+}
+
+.dark-mode .btn-order:disabled {
+  background: #27ae60 !important;
+  color: white !important;
+}
+
+.dark-mode #cart {
+  background: #2d2d2d !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #444 !important;
+}
+
+.dark-mode #cart-total {
+  color: #ff6b6b !important;
+}
+
+.dark-mode #btn-checkout {
+  background: #27ae60 !important;
+  color: white !important;
+}
+
+.dark-mode #dark-mode-toggle {
+  background: #f1c40f !important;
+  color: #2c3e50 !important;
+}
+
+.dark-mode .btn-order:hover:not(:disabled) {
+  background: #c0392b !important;
+}
+
+/* FIX KERANJANG ITEM DI DARK MODE */
+.dark-mode #cart-items div {
+  background: #3d3d3d !important;
+  color: #f0f0f0 !important;
+  border: 1px solid #555 !important;
+}
+/* end tambahan baru */
+
+/* dark mode category header */
+.category-header {
+  background: white;
+  color: #2c3e50;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
 .menu-category {
     display: grid;
     /* grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));  */
@@ -124,3 +206,4 @@ footer {
     color: #777;
     font-size: 0.9rem;
 }
+
