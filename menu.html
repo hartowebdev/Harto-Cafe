@@ -19,6 +19,17 @@
     <a href="menu.html">Menu</a>
   </nav>
 
+  <div id="cart" style="margin: 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 12px; display: none;">
+    <h3 style="margin-top: 0; color: #2c3e50;">Keranjang Belanja</h3>
+    <div id="cart-items"></div>
+    <div style="margin-top: 1rem; font-weight: bold; font-size: 1.2rem; color: #e74c3c;">
+    Total: <span id="cart-total">Rp 0</span>
+  </div>
+    <button id="btn-checkout" style="margin-top: 1rem; background: #27ae60; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%;">
+    KIRIM PESANAN KE WHATSAPP
+    </button>
+  </div>
+
   <main>
     <section class="menu-category">
       <h2>Appetizers</h2>
@@ -27,9 +38,9 @@
         <h3>Bruschetta</h3>
         <p>Tomato, basil, garlic on toasted bread</p>
         <span class="price">Rp 35.000</span>
-            <button class="btn-order" data-name="Bruschetta" data-price="35000">
-              PESAN Bruschetta
-            </button>
+              <button class="btn-order" data-name="Bruschetta" data-price="35000">
+                Tambah ke keranjang
+              </button>
       </div>
     
       <div class="menu-item">
@@ -37,7 +48,7 @@
         <p>Milk, Chocolate, Cheese Big Pancake</p>
         <span class="price">Rp 50.000</span>
             <button class="btn-order" data-name="Martabak" data-price="50000">
-              PESAN Martabak
+              Tambah ke keranjang
             </button>
       </div>
 
@@ -46,7 +57,7 @@
         <p>Grilled Cassava</p>
         <Span class="price">Rp. 15.000</Span>
             <button class="btn-order" data-name="Singkong Goreng" data-price="15000">
-              PESAN Singkong Goreng
+              Tambah ke keranjang
             </button>
       </div>
     </section>
@@ -60,7 +71,7 @@
           <p>Telur, ayam suwir, kerupuk</p>
         <span class="price">Rp. 45.000</span>
           <button class="btn-order" data-name="Nasi Goreng" data-price="45000">
-            PESAN NASI GORENG SPESIAL
+            Tambah ke keranjang
           </button>
       </div>   
           
@@ -69,7 +80,7 @@
           <p>Sambal, ayam Bakar Paha/Dada, kerupuk</p>
         <span class="price"> Rp. 45.000</span>
           <button class="btn-order" data-name="Nasi Ayam Madu" data-price="45000">
-            PESAN NASI AYAM BAKAR MADU
+            Tambah ke keranjang
           </button>
       </div>
 
@@ -78,7 +89,7 @@
           <p> Sop Buntut Bakar / rebus, kerupuk</p>
         <span class="price"> Rp. 45.000</span>
           <button class="btn-order" data-name="Nasi Sop Buntut" data-price="45000">
-            PESAN NASI SOP BUNTUT
+            Tambah ke Keranjang
           </button>
         </div>
     </section>
@@ -91,7 +102,7 @@
           <p>Teh Segar + Gula</p>
         <span class="price">Rp. 12.000</span>
           <button class="btn-order" data-name="Teh Manis" data-price="12000">  
-            PESAN ES TEH MANIS
+            Tambah ke keranjang
           </button>
       </div>
 
@@ -100,7 +111,7 @@
           <p>Jeruk peras murni</p>
         <span class="price">Rp. 22.000</span>
         <button class="btn-order" data-name="Es Jeruk" data-price="22000">  
-          PESAN ES JERUK
+          Tambah ke keranjang
         </button>
       </div>
 
@@ -109,7 +120,7 @@
           <p>Es Buah kelapa sirop</p>
         <span class="price">Rp. 43.000</span>
         <button class="btn-order" data-name="Es Jeruk" data-price="43000">  
-          PESAN ES CAMPUR
+          Tambah ke keranjang
         </button>
       </div>
     </section>
@@ -120,23 +131,84 @@
   <footer>
     &copy; 2025 Harto's Cafe
   </footer>
-
-  <script>
+  <!--   script dark mode-->
+    <button id="dark-mode-toggle" style="margin: 1rem 0; padding: 0.8rem 1.5rem; background: #34495e; color: white; border: none; border-radius: 8px; cursor: pointer;">
+      🌙 Dark Mode
+    </button>
+ 
+ <script>
+    let cart = [];
 
     document.querySelectorAll('.btn-order').forEach(button => {
-      button.addEventListener('click', function() {
-        const name = this.getAttribute('data-name');
-        const price = this.getAttribute('data-price');
-        const formattedPrice = 'Rp ' + parseInt(price).toLocaleString('id-ID') + ',00';
-      alert(`PESANAN ${name.toUpperCase()} DITERIMA!\n\nHubungi WA: 08123456789\n${formattedPrice}`);
+    button.addEventListener('click', function() {
+      const name = this.getAttribute('data-name');
+      const price = parseInt(this.getAttribute('data-price'));
     
+      cart.push({ name, price });
     
-        this.style.background = '#27ae60';
-        this.textContent = 'SUDAH DIPESAN!';
-        this.disabled = true;
+    this.style.background = '#27ae60';
+    this.textContent = 'SUDAH DITAMBAH!';
+    this.disabled = true;
+    
+    updateCart();
   });
 });
+
+      function updateCart() {
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      const cartDiv = document.getElementById('cart');
+  
+  if (cart.length === 0) {
+    cartDiv.style.display = 'none';
+    return;
+  }
+  
+  cartDiv.style.display = 'block';
+  
+  cartItems.innerHTML = cart.map(item => 
+    `<div style="margin: 0.5rem 0; padding: 0.5rem; background: white; border-radius: 8px;">
+       • ${item.name} - Rp ${item.price.toLocaleString('id-ID')}
+     </div>`
+  ).join('');
+  
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  cartTotal.textContent = 'Rp ' + total.toLocaleString('id-ID');
+}
+
+document.getElementById('btn-checkout').addEventListener('click', function() {
+  if (cart.length === 0) return;
+  
+  const itemsText = cart.map(item => 
+    `%E2%9C%85 ${item.name} - Rp ${item.price.toLocaleString('id-ID')}`
+  ).join('%0A');
+  
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  const message = `Halo Harto's Cafe!%0ASaya mau pesan:%0A${itemsText}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
+  
+  window.open(`https://wa.me/+6285133330839?text=${message}`, '_blank');
+});
 </script>
+<!-- end of script keranjang -->
+
+<!-- tambahan script dark mode -->
+
+<script>
+// Tambah di bawah script keranjang
+document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+  document.body.classList.toggle('dark-mode');
+  this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+});
+</script>
+
+<style>
+.dark-mode { background: #2c3e50; color: #ecf0f1; }
+.dark-mode .menu-item, .dark-mode #cart { background: #34495e; color: #ecf0f1; }
+.dark-mode .price { color: #e74c3c; }
+</style>
+
+
+
 
 </body>
   
