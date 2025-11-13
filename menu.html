@@ -20,7 +20,7 @@
   </nav>
 
   <div id="cart" style="margin: 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 12px; display: none;">
-    <h3 style="margin-top: 0; color: #2c3e50;">Keranjang Belanja</h3>
+    <h3 style="margin-top: 0; color: #5bcc9d;">Keranjang Belanja</h3>
     <div id="cart-items"></div>
     <div style="margin-top: 1rem; font-weight: bold; font-size: 1.2rem; color: #e74c3c;">
     Total: <span id="cart-total">Rp 0</span>
@@ -32,7 +32,7 @@
 
   <main>
     <section class="menu-category">
-      <h2>Appetizers</h2>
+      <h2 class="Category-header">Appetizers</h2>
 
       <div class="menu-item">
         <h3>Bruschetta</h3>
@@ -64,7 +64,7 @@
 
     <Section>
       <section class="menu-category">
-        <h2>Main Courses</h2>
+        <h2 class="category-header">Main Courses</h2>
 
         <div class="menu-item">
           <h3>Nasi Goreng Special</h3>
@@ -96,7 +96,7 @@
 
 
     <section class="menu-category">
-      <h2>Drinks</h2>
+      <h2 class="category-header">Drinks</h2>
       <div class="menu-item">
           <h3>Es Teh Manis</h3>
           <p>Teh Segar + Gula</p>
@@ -194,7 +194,6 @@ document.getElementById('btn-checkout').addEventListener('click', function() {
 <!-- tambahan script dark mode -->
 
 <script>
-// Tambah di bawah script keranjang
 document.getElementById('dark-mode-toggle').addEventListener('click', function() {
   document.body.classList.toggle('dark-mode');
   this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
@@ -207,7 +206,60 @@ document.getElementById('dark-mode-toggle').addEventListener('click', function()
 .dark-mode .price { color: #e74c3c; }
 </style>
 
+<style>
+.dark-mode {
+  background: #1a1a1a;
+  color: #f0f0f0;
+}
 
+.dark-mode .menu-item {
+  background: #2d2d2d;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+.dark-mode .menu-item h3,
+.dark-mode .menu-item p {
+  color: #f0f0f0 !important;
+}
+
+.dark-mode .price {
+  color: #ff6b6b !important; /* Merah terang */
+}
+
+.dark-mode .btn-order {
+  background: #e74c3c;
+  color: white;
+}
+
+.dark-mode .btn-order:disabled {
+  background: #27ae60;
+  color: white;
+}
+
+.dark-mode #cart {
+  background: #2d2d2d;
+  color: #f0f0f0;
+}
+
+.dark-mode #cart-total {
+  color: #ff6b6b;
+}
+
+.dark-mode #btn-checkout {
+  background: #27ae60;
+}
+
+.dark-mode #dark-mode-toggle {
+  background: #f1c40f;
+  color: #2c3e50;
+}
+
+/* Tombol hover */
+.dark-mode .btn-order:hover:not(:disabled) {
+  background: #c0392b;
+}
+</style>
 
 
 </body>
