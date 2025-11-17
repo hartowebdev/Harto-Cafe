@@ -120,7 +120,7 @@
           <h3>Es Campur</h3>
           <p>Es Buah kelapa sirop</p>
         <span class="price">Rp. 43.000</span>
-        <button class="btn-order" data-name="Es Jeruk" data-price="43000">  
+        <button class="btn-order" data-name="Es Campur" data-price="43000">  
           Tambah ke keranjang
         </button>
       </div>
@@ -152,9 +152,9 @@
     </button>
  
  <script>
-    let cart = []; // sekarang {name, price, qty}
+  let cart = [];
 
-      // Tambah atau tambah kuantitas
+  // Tambah ke keranjang + kuantitas
   document.querySelectorAll('.btn-order').forEach(button => {
     button.addEventListener('click', function() {
       const name = this.getAttribute('data-name');
@@ -173,71 +173,62 @@
     });
   });
 
-  // Update keranjang dengan + dan –
   function updateCart() {
-    const cartItems = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    cartItems.innerHTML = '';
+  const cartItems = document.getElementById('cart-items');
+  const cartTotal = document.getElementById('cart-total');
+  cartItems.innerHTML = '';
 
-    if (cart.length === 0) {
+  if (cart.length === 0) {
     cartItems.innerHTML = '<p style="text-align:center; color:#999; padding:1rem;">Keranjang kosong</p>';
     document.getElementById('cart').style.display = 'none';
     return;
-    }
-
-    let total = 0;
-    cart.forEach((item, index) => {
-      total += item.price * item.qty;
-
-      const itemDiv = document.createElement('div');
-      itemDiv.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:0.8rem; margin:0.5rem 0; background:#fff; border-radius:8px; box-shadow:0 1px 5px rgba(0,0,0,0.1);';
-
-      itemDiv.innerHTML = `
-        <span>• ${item.name} - Rp ${item.price.toLocaleString('id-ID')} × ${item.qty}</span>
-        <div style="display:flex; gap:0.5rem; align-items:center;">
-          <button onclick="changeQty(${index}, -1)" style="background:#e67e22; color:white; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold;">–</button>
-          <span style="min-width:30px; text-align:center; font-weight:bold;">${item.qty}</span>
-          <button onclick="changeQty(${index}, 1)" style="background:#27ae60; color:white; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold;">+</button>
-          <button onclick="removeFromCart(${index})" style="background:#e74c3c; color:white; border:none; width:28px; height:28px; border-radius:50%; font-size:18px; margin-left:0.5rem;">×</button>
-        </div>
-      `;
-
-      if (document.body.classList.contains('dark-mode')) {
-        itemDiv.style.background = '#3d3d3d';
-        itemDiv.style.color = '#f0f0f0';
-      }
-
-      cartItems.appendChild(itemDiv);
-    });
-
-    cartTotal.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
-    document.getElementById('cart').style.display = 'block';
   }
 
-  // Ubah kuantitas
+  let total = 0;
+  cart.forEach((item, index) => {
+    total += item.price * item.qty;
+
+    const itemDiv = document.createElement('div');
+    itemDiv.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:0.8rem; margin:0.5rem 0; background:#fff; border-radius:8px; box-shadow:0 1px 5px rgba(0,0,0,0.1);';
+
+    itemDiv.innerHTML = `
+      <span>• ${item.name} × ${item.qty} = Rp ${(item.price * item.qty).toLocaleString('id-ID')}</span>
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <button onclick="changeQty(${index}, -1)" style="background:#e67e22; color:white; border:none; width:32px; height:32px; border-radius:50%; font-weight:bold;">–</button>
+        <span style="min-width:35px; text-align:center; font-weight:bold;">${item.qty}</span>
+        <button onclick="changeQty(${index}, 1)" style="background:#27ae60; color:white; border:none; width:32px; height:32px; border-radius:50%; font-weight:bold;">+</button>
+        <button onclick="removeFromCart(${index})" style="background:#e74c3c; color:white; border:none; width:32px; height:32px; border-radius:50%; font-size:18px;">×</button>
+      </div>
+    `;
+
+    if (document.body.classList.contains('dark-mode')) {
+      itemDiv.style.background = '#3d3d3d';
+      itemDiv.style.color = '#f0f0f0';
+    }
+    cartItems.appendChild(itemDiv);
+  });
+
+  cartTotal.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+  document.getElementById('cart').style.display = 'block';
+}
+
   function changeQty(index, change) {
     cart[index].qty += change;
-    if (cart[index].qty <= 0) {
-      cart.splice(index, 1);
-      resetOrderButtons();
-    }
+    if (cart[index].qty <= 0) cart.splice(index, 1);
     updateCart();
     resetOrderButtons();
   }
 
-  // Hapus item
   function removeFromCart(index) {
     cart.splice(index, 1);
     updateCart();
     resetOrderButtons();
   }
 
-  // Reset tombol menu jika item sudah tidak ada di keranjang
   function resetOrderButtons() {
     document.querySelectorAll('.btn-order').forEach(btn => {
       const name = btn.getAttribute('data-name');
-      const inCart = cart.some(item => item.name === name);
-      if (!inCart) {
+      if (!cart.some(item => item.name === name)) {
         btn.style.background = '#e74c3c';
         btn.textContent = 'Tambah ke keranjang';
         btn.disabled = false;
@@ -245,38 +236,42 @@
     });
   }
 
-  // Kirim ke WhatsApp
+  // KONFIRMASI PESANAN CANTIK
   document.getElementById('btn-checkout').addEventListener('click', function() {
     if (cart.length === 0) return;
 
-    let message = "Halo Harto's Cafe!%0ASaya mau pesan:%0A%0A";
     let total = 0;
+    let list = "";
     cart.forEach(item => {
       const subtotal = item.price * item.qty;
       total += subtotal;
+      list += `<div style="padding:0.8rem 0; border-bottom:1px solid #eee;">
+        • ${item.name} × ${item.qty} = Rp ${subtotal.toLocaleString('id-ID')}
+      </div>`;
+    });
+
+    document.getElementById('confirm-list').innerHTML = list;
+    document.getElementById('confirm-total').textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+    document.getElementById('confirm-modal').style.display = 'flex';
+    
+    window.pesananFinal = { cart: [...cart], total };
+  });
+
+  function batalKirim() {
+    document.getElementById('confirm-modal').style.display = 'none';
+  }
+
+  function kirimPesanan() {
+    document.getElementById('confirm-modal').style.display = 'none';
+    let message = "Halo Harto's Cafe!%0ASaya mau pesan:%0A%0A";
+    window.pesananFinal.cart.forEach(item => {
+      const subtotal = item.price * item.qty;
       message += `• ${item.name} × ${item.qty} = Rp ${subtotal.toLocaleString('id-ID')}%0A`;
     });
-    message += `%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
-
-    window.open(`https://wa.me/628123456789?text=${message}`, '_blank');
-  });
-</script>
-
-  // Kirim ke WhatsApp (pastikan fungsi ini ada juga!)
-  document.getElementById('btn-checkout').addEventListener('click', function() {
-    if (cart.length === 0) return;
-
-    let message = "Halo Harto's Cafe!%0ASaya mau pesan:%0A%0A";
-    cart.forEach(item => {
-      message += `• ${item.name} - Rp ${item.price.toLocaleString('id-ID')}%0A`;
-    });
-    const total = cart.reduce((sum, item) => sum + item.price, 0);
-    message += `%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
-
+    message += `%0A*Total: Rp ${window.pesananFinal.total.toLocaleString('id-ID')}*`;
     window.open(`https://wa.me/6285133330839?text=${message}`, '_blank');
-  });
+  }
 </script>
-
 
 <script>
 // Kirim Kontak ke WA
@@ -361,6 +356,18 @@ document.getElementById('dark-mode-toggle').addEventListener('click', function()
 }
 </style>
 
+<!-- MODAL KONFIRMASI PESANAN -->
+<div id="confirm-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:2rem; border-radius:16px; width:90%; max-width:500px; text-align:center; box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+    <h3 style="margin:0 0 1rem 0; color:#2c3e50;">Konfirmasi Pesanan</h3>
+    <div id="confirm-list" style="background:#f8f9fa; padding:1rem; border-radius:12px; margin:1rem 0; text-align:left; max-height:300px; overflow-y:auto; font-size:1rem;"></div>
+    <p id="confirm-total" style="font-size:1.4rem; font-weight:bold; color:#e74c3c; margin:1rem 0;"></p>
+    <div style="display:flex; gap:1rem; justify-content:center;">
+      <button onclick="batalKirim()" style="background:#95a5a6; color:white; padding:0.8rem 2rem; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Batal</button>
+      <button onclick="kirimPesanan()" style="background:#27ae60; color:white; padding:0.8rem 2rem; border:none; border-radius:12px; cursor:pointer; font-weight:bold;">Ya, Kirim!</button>
+    </div>
+  </div>
+</div>
 
 </body>
   
