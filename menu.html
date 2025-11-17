@@ -21,7 +21,8 @@
 
   <div id="cart" style="margin: 2rem 0; padding: 1.5rem; background: #f8f9fa; border-radius: 12px; display: none;">
     <h3 style="margin-top: 0; color: #5bcc9d;">Keranjang Belanja</h3>
-    <div id="cart-items"></div>
+    <div id="cart-items">
+    </div>
     <div style="margin-top: 1rem; font-weight: bold; font-size: 1.2rem; color: #e74c3c;">
     Total: <span id="cart-total">Rp 0</span>
   </div>
@@ -125,6 +126,20 @@
       </div>
     </section>
 
+      <!-- FORM KONTAK -->
+    <section id="contact" style="margin: 3rem auto; max-width: 600px; padding: 2rem; background: #f8f9fa; border-radius: 16px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+      <h2 style="margin: 0 0 0.5rem 0; color: #2c3e50; font-size: 1.8rem;">Ada Pertanyaan?</h2>
+      <p style="margin: 0 0 1.5rem 0; color: #7f8c8d;">Kirim langsung ke WhatsApp kami!</p>
+  
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <input type="text" id="contact-name" placeholder="Nama kamu" style="width: 100%; max-width: 500px; padding: 1rem; border: 2px solid #ddd; border-radius: 12px; font-size: 1rem; transition: border 0.3s;">
+      <textarea id="contact-message" placeholder="Pesan kamu..." rows="5" style="width: 100%; max-width: 500px; padding: 1rem; border: 2px solid #ddd; border-radius: 12px; font-size: 1rem; resize: vertical; transition: border 0.3s;"></textarea>
+    
+        <button id="btn-send-contact" style="background: #128C7E; color: white; padding: 1rem 2.5rem; border: none; border-radius: 12px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
+          KIRIM KE WHATSAPP
+        </button>
+      </div>
+    </section>
 
   </main>
 
@@ -137,58 +152,143 @@
     </button>
  
  <script>
-    let cart = [];
+    let cart = []; // sekarang {name, price, qty}
 
-    document.querySelectorAll('.btn-order').forEach(button => {
+      // Tambah atau tambah kuantitas
+  document.querySelectorAll('.btn-order').forEach(button => {
     button.addEventListener('click', function() {
       const name = this.getAttribute('data-name');
       const price = parseInt(this.getAttribute('data-price'));
-    
-      cart.push({ name, price });
-    
-    this.style.background = '#27ae60';
-    this.textContent = 'SUDAH DITAMBAH!';
-    this.disabled = true;
-    
-    updateCart();
+
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+        this.style.background = '#27ae60';
+        this.textContent = 'SUDAH DITAMBAH!';
+        this.disabled = true;
+      }
+      updateCart();
+    });
   });
-});
 
-      function updateCart() {
-      const cartItems = document.getElementById('cart-items');
-      const cartTotal = document.getElementById('cart-total');
-      const cartDiv = document.getElementById('cart');
-  
-  if (cart.length === 0) {
-    cartDiv.style.display = 'none';
+  // Update keranjang dengan + dan –
+  function updateCart() {
+    const cartItems = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    cartItems.innerHTML = '';
+
+    if (cart.length === 0) {
+    cartItems.innerHTML = '<p style="text-align:center; color:#999; padding:1rem;">Keranjang kosong</p>';
+    document.getElementById('cart').style.display = 'none';
     return;
-  }
-  
-  cartDiv.style.display = 'block';
-  
-  cartItems.innerHTML = cart.map(item => 
-    `<div style="margin: 0.5rem 0; padding: 0.5rem; background: white; border-radius: 8px;">
-       • ${item.name} - Rp ${item.price.toLocaleString('id-ID')}
-     </div>`
-  ).join('');
-  
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
-  cartTotal.textContent = 'Rp ' + total.toLocaleString('id-ID');
-}
+    }
 
-document.getElementById('btn-checkout').addEventListener('click', function() {
-  if (cart.length === 0) return;
+    let total = 0;
+    cart.forEach((item, index) => {
+      total += item.price * item.qty;
+
+      const itemDiv = document.createElement('div');
+      itemDiv.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:0.8rem; margin:0.5rem 0; background:#fff; border-radius:8px; box-shadow:0 1px 5px rgba(0,0,0,0.1);';
+
+      itemDiv.innerHTML = `
+        <span>• ${item.name} - Rp ${item.price.toLocaleString('id-ID')} × ${item.qty}</span>
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button onclick="changeQty(${index}, -1)" style="background:#e67e22; color:white; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold;">–</button>
+          <span style="min-width:30px; text-align:center; font-weight:bold;">${item.qty}</span>
+          <button onclick="changeQty(${index}, 1)" style="background:#27ae60; color:white; border:none; width:28px; height:28px; border-radius:50%; font-weight:bold;">+</button>
+          <button onclick="removeFromCart(${index})" style="background:#e74c3c; color:white; border:none; width:28px; height:28px; border-radius:50%; font-size:18px; margin-left:0.5rem;">×</button>
+        </div>
+      `;
+
+      if (document.body.classList.contains('dark-mode')) {
+        itemDiv.style.background = '#3d3d3d';
+        itemDiv.style.color = '#f0f0f0';
+      }
+
+      cartItems.appendChild(itemDiv);
+    });
+
+    cartTotal.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+    document.getElementById('cart').style.display = 'block';
+  }
+
+  // Ubah kuantitas
+  function changeQty(index, change) {
+    cart[index].qty += change;
+    if (cart[index].qty <= 0) {
+      cart.splice(index, 1);
+      resetOrderButtons();
+    }
+    updateCart();
+    resetOrderButtons();
+  }
+
+  // Hapus item
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    updateCart();
+    resetOrderButtons();
+  }
+
+  // Reset tombol menu jika item sudah tidak ada di keranjang
+  function resetOrderButtons() {
+    document.querySelectorAll('.btn-order').forEach(btn => {
+      const name = btn.getAttribute('data-name');
+      const inCart = cart.some(item => item.name === name);
+      if (!inCart) {
+        btn.style.background = '#e74c3c';
+        btn.textContent = 'Tambah ke keranjang';
+        btn.disabled = false;
+      }
+    });
+  }
+
+  // Kirim ke WhatsApp
+  document.getElementById('btn-checkout').addEventListener('click', function() {
+    if (cart.length === 0) return;
+
+    let message = "Halo Harto's Cafe!%0ASaya mau pesan:%0A%0A";
+    let total = 0;
+    cart.forEach(item => {
+      const subtotal = item.price * item.qty;
+      total += subtotal;
+      message += `• ${item.name} × ${item.qty} = Rp ${subtotal.toLocaleString('id-ID')}%0A`;
+    });
+    message += `%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
+
+    window.open(`https://wa.me/628123456789?text=${message}`, '_blank');
+  });
+</script>
+
+  // Kirim ke WhatsApp (pastikan fungsi ini ada juga!)
+  document.getElementById('btn-checkout').addEventListener('click', function() {
+    if (cart.length === 0) return;
+
+    let message = "Halo Harto's Cafe!%0ASaya mau pesan:%0A%0A";
+    cart.forEach(item => {
+      message += `• ${item.name} - Rp ${item.price.toLocaleString('id-ID')}%0A`;
+    });
+    const total = cart.reduce((sum, item) => sum + item.price, 0);
+    message += `%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
+
+    window.open(`https://wa.me/6285133330839?text=${message}`, '_blank');
+  });
+</script>
+
+
+<script>
+// Kirim Kontak ke WA
+document.getElementById('btn-send-contact').addEventListener('click', function() {
+  const name = document.getElementById('contact-name').value || 'Tamu';
+  const message = document.getElementById('contact-message').value || 'Halo';
   
-  const itemsText = cart.map(item => 
-    `%E2%9C%85 ${item.name} - Rp ${item.price.toLocaleString('id-ID')}`
-  ).join('%0A');
-  
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
-  const message = `Halo Harto's Cafe!%0ASaya mau pesan:%0A${itemsText}%0A%0A*Total: Rp ${total.toLocaleString('id-ID')}*`;
-  
-  window.open(`https://wa.me/+6285133330839?text=${message}`, '_blank');
+  const text = `Halo Harto's Cafe!%0ANama: ${name}%0A%0A${message}`;
+  window.open(`https://wa.me/6285133330839?text=${text}`, '_blank');
 });
 </script>
+
 <!-- end of script keranjang -->
 
 <!-- tambahan script dark mode -->

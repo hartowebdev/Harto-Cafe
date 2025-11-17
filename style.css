@@ -207,3 +207,115 @@ footer {
     font-size: 0.9rem;
 }
 
+/* ANIMASI MASUK */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menu-category {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.menu-item {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+/* Delay biar masuk bergantian */
+.menu-item:nth-child(1) { animation-delay: 0.1s; }
+.menu-item:nth-child(2) { animation-delay: 0.2s; }
+.menu-item:nth-child(3) { animation-delay: 0.3s; }
+.menu-item:nth-child(4) { animation-delay: 0.4s; }
+.menu-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* Keranjang animasi */
+#cart {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* RESPONSIVE HP */
+@media (max-width: 768px) {
+  .menu-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  .menu-item .price {
+    margin: 0.5rem 0;
+  }
+  .btn-order {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  #contact input, #contact textarea {
+    width: 90%;
+  }
+}
+
+/* FORM KONTAK — LEBIH CANTIK */
+#contact input:focus,
+#contact textarea:focus {
+  outline: none;
+  border-color: #128C7E;
+}
+
+/* Dark mode untuk form kontak */
+.dark-mode #contact {
+  background: #2d2d2d !important;
+}
+
+.dark-mode #contact input,
+.dark-mode #contact textarea {
+  background: #3d3d3d;
+  border-color: #555;
+  color: #f0f0f0;
+}
+
+.dark-mode #contact h2 { color: #f0f0f0; }
+.dark-mode #contact p { color: #bdc3c7; }
+
+* FORM KONTAK — DARK MODE SEMPURNA */
+.dark-mode #contact {
+  background: #2d2d2d !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+}
+
+.dark-mode #contact h2 {
+  color: #f0f0f0 !important;
+}
+
+.dark-mode #contact p {
+  color: #bdc3c7 !important;
+}
+
+.dark-mode #contact input,
+.dark-mode #contact textarea {
+  background: #3d3d3d !important;
+  border: 2px solid #555 !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode #contact input:focus,
+.dark-mode #contact textarea:focus {
+  border-color: #128C7E !important;
+}
+
+.dark-mode #contact button {
+  background: #128C7E !important;
+}
+
+/* TOMBOL HAPUS DI KERANJANG */
+.dark-mode #cart-items div {
+  background: #3d3d3d !important;
+  color: #f0f0f0 !important;
+}
+
+.dark-mode #cart-items button {
+  background: #c0392b !important;
+}
